@@ -1,5 +1,5 @@
-import { Controller, Post, Query } from '@nestjs/common';
-import { ProductName } from './product/product.model';
+import { Body, Controller, Post } from '@nestjs/common';
+import { BuyProductDto } from './vending-machine/dto/buy-product.dto';
 import { VendingMachine } from './vending-machine/vending-machine.entity';
 
 @Controller()
@@ -7,10 +7,10 @@ export class AppController {
   constructor(private readonly vendingMachine: VendingMachine) {}
 
   @Post('buy')
-  buy(
-    @Query('productName') productName: ProductName,
-    @Query('coins') coins: string,
-  ): string {
-    return this.vendingMachine.buy(productName, coins);
+  buy(@Body() buyProductDto: BuyProductDto): string {
+    return this.vendingMachine.buy(
+      buyProductDto.productName,
+      buyProductDto.coins,
+    );
   }
 }
