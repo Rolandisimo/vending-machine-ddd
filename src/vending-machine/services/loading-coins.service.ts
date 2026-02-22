@@ -1,27 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { ValidCoin, validCoins } from '../../coin/coin.model';
+import { validCoins } from '../../coin/coin.model';
 import { Coin } from '../../coin/coin.value';
 
 @Injectable()
 export class LoadingCoinsService {
-  private loadedCoins: Coin[] = [];
-  public loadCoins(coins: string) {
-    const rawCoins: number[] = coins.split(' ').map((s) => parseInt(s));
+  private readonly loadedCoins: Coin[] = [];
 
-    rawCoins.forEach((coin) => {
-      // Expected that the type is unknown at this stage
-      if (!validCoins.includes(coin as any)) {
-        console.warn(
-          `${coin} is not a valid coin. Valid coins are ${validCoins.join(' ')}`,
-        );
+  public loadCoins(coins: string): void {
+    const rawCoinValuesFromInput = this.extractCoinValuesFromRawInput(coins);
+
+    rawCoinValuesFromInput.forEach((coin) => {
+      if (!validCoins.includes(coin)) {
         return;
       }
 
-      this.loadedCoins.push(new Coin(coin as ValidCoin));
+      this.loadedCoins.push(new Coin(coin));
     });
   }
 
   public getLoadedCoins(): Coin[] {
     return this.loadedCoins;
+  }
+
+  private extractCoinValuesFromRawInput(coins: string): number[] {
+    return coins.split(' ').map((s) => parseInt(s));
   }
 }

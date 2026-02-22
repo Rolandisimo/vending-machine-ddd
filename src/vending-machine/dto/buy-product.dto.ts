@@ -10,5 +10,6 @@ export class BuyProductDto {
   productName: ProductName;
 
   @IsString()
+  @IsNotEmpty()
   coins: string;
 }

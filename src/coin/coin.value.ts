@@ -1,5 +1,3 @@
-// import { Money } from 'src/money.model';
-
 import { ValidCoin, validCoins } from './coin.model';
 
 export class Coin {

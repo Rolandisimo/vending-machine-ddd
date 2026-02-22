@@ -29,20 +29,19 @@ export class ChangeService {
     return this.getChangeToGiveBackAfterPaying(loadedProduct.getPrice());
   }
 
-  private getChangeToGiveBackAfterPaying(loadedProductPrice: number) {
-    let changeToGive = this.balance.getValue() - loadedProductPrice;
+  private getChangeToGiveBackAfterPaying(loadedProductPrice: number): string {
+    this.balance = this.balance.subtract(loadedProductPrice);
     const coinsGivenBack: number[] = [];
 
-    // CALCULATE EXACT COINS TO GIVE - different responsibility for vending mahcine
     // Algorithm innefficient because it goes over all coins every time
-    while (changeToGive > 0) {
+    while (this.balance.getValue() > 0) {
       for (const validCoin of validCoins) {
-        if (changeToGive < validCoin) {
+        if (this.balance.getValue() < validCoin) {
           continue;
         }
 
         coinsGivenBack.push(validCoin);
-        changeToGive -= validCoin;
+        this.balance = this.balance.subtract(validCoin);
         break;
       }
     }

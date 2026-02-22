@@ -10,8 +10,8 @@ import { ProductNotFoundError } from '../../errors/product-not-found.error';
 
 @Injectable()
 export class LoadingProductService {
-  private loadedProduct: ProductBase; // NEEDS TO BE the interface
-  public loadProduct(productName: ProductName) {
+  private loadedProduct: ProductBase;
+  public loadProduct(productName: ProductName): void {
     const foundProduct = this.findProduct(productName);
     this.loadedProduct = foundProduct;
   }
