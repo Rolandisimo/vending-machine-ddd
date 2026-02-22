@@ -1,13 +1,17 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ProductName } from './product.model';
 
 export abstract class ProductBase {
   private id: string;
-  // where to put the policy that product price can't be negative?
-  protected abstract price: number;
-  protected abstract name: ProductName;
-  constructor() {
-    this.id = uuidv4();
+  // Price needs to be a value object
+  private price: number;
+
+  // Name needs to be a value object
+  private name: ProductName;
+
+  constructor(name: ProductName, price: number) {
+    this.id = Date.now().toString() + Math.random();
+    this.setPrice(price);
+    this.setName(name);
   }
 
   public getId(): string {
@@ -18,25 +22,33 @@ export abstract class ProductBase {
     return this.price;
   }
 
+  protected setPrice(price: number): void {
+    this.price = price;
+  }
+
   public getName(): ProductName {
     return this.name;
+  }
+
+  private setName(name: ProductName) {
+    this.name = name;
   }
 }
 
 export class ProductA extends ProductBase {
-  public name: typeof ProductName.A = ProductName.A;
-  // should be PriceValueObject?
-  protected price: number = 95;
+  constructor() {
+    super(ProductName.A, 95);
+  }
 }
 
 export class ProductB extends ProductBase {
-  public name: typeof ProductName.B = ProductName.B;
-  // should be PriceValueObject?
-  protected price: number = 126;
+  constructor() {
+    super(ProductName.B, 126);
+  }
 }
 
 export class ProductC extends ProductBase {
-  public name: typeof ProductName.C = ProductName.C;
-  // should be PriceValueObject?
-  protected price: number = 233;
+  constructor() {
+    super(ProductName.C, 233);
+  }
 }

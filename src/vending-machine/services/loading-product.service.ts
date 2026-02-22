@@ -22,11 +22,11 @@ export class LoadingProductService {
   private findProduct(productName: ProductName): ProductBase | null {
     const allProducts = [new ProductA(), new ProductB(), new ProductC()];
     const foundProduct = allProducts.find(
-      (product) => product.name === productName,
+      (product) => product.getName() === productName,
     );
 
     if (!foundProduct) {
-      new Error(`Product ${productName} is not available`);
+      console.warn(`Product ${productName} is not available`);
       return null;
     }
 
