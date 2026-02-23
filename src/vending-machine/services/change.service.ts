@@ -4,30 +4,49 @@ import { Coin } from '../../coin/coin.value';
 import { validCoins } from '../../coin/coin.model';
 import { InsufficientBalanceError } from '../../errors/insufficient-balance.error';
 import { BalanceService } from './balance.service';
+import { LoadingCoinsService } from './loading-coins.service';
+import { LoadingProductService } from './loading-product.service';
 
 @Injectable()
 export class ChangeService {
-  constructor(private readonly balanceService: BalanceService) {}
+  constructor(
+    private readonly balanceService: BalanceService,
+    private readonly loadCoinsService: LoadingCoinsService,
+    private readonly loadProductService: LoadingProductService,
+  ) {}
 
-  public returnChange(product: ProductBase, coins: Coin[]): string {
-    // why is topup here? Feels awkward
+  public returnChange(): string {
+    /**
+     * Loading coins, Loading Product, Topping up balance - all happen inside
+     * return change method
+     *
+     * 1) In a way, if the buyer loads coins, the machine needs to count the balance,
+     * so that has to be an action that precedes loading product
+     * (assuming first action must be topping up the balance)
+     *
+     * 2) Then the buyer chooses the product which then needs to load it (find it and prepare for purchase)
+     *
+     * 3) Only then does the change returning algorithm needs to execute
+     */
+    const coins: Coin[] = this.loadCoinsService.getLoadedCoins();
+    const product: ProductBase = this.loadProductService.getLoadedProduct();
     this.balanceService.topUp(coins);
 
-    // domain rule - balance can't be lower than product price
-    // might need a specification class
-    // feels like Value Object behavior but exposing the balance directly feels wrong due to other
-    // operations that balance service can do
-    if (this.balanceService.isLessThan(product.getPrice())) {
-      throw new InsufficientBalanceError(
-        this.balanceService.getBalance(),
-        product.getPrice(),
-      );
-    }
+    this.balanceMustBeEqualOrHigherThanProductPrice(product.getPrice());
 
-    return this.getChangeToGiveBackAfterPaying(product.getPrice());
+    return this.calculateChange(product.getPrice());
   }
 
-  private getChangeToGiveBackAfterPaying(productPrice: number): string {
+  private balanceMustBeEqualOrHigherThanProductPrice(productPrice: number) {
+    if (this.balanceService.isLessThan(productPrice)) {
+      throw new InsufficientBalanceError(
+        this.balanceService.getBalance(),
+        productPrice,
+      );
+    }
+  }
+
+  private calculateChange(productPrice: number): string {
     this.balanceService.subtract(productPrice);
     const coinsGivenBack: number[] = [];
 
@@ -55,4 +74,6 @@ export class ChangeService {
 
     return change.trim();
   }
+
+
 }

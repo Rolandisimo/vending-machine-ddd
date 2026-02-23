@@ -14,11 +14,8 @@ export class VendingMachine {
 
   public buy(productName: ProductName, coins: string): string {
     this.loadCoinsService.loadCoins(coins);
-    const loadedCoins = this.loadCoinsService.getLoadedCoins();
-
     this.loadProductService.loadProduct(productName);
-    const loadedProduct = this.loadProductService.getLoadedProduct();
 
-    return this.changeService.returnChange(loadedProduct, loadedCoins);
+    return this.changeService.returnChange();
   }
 }
