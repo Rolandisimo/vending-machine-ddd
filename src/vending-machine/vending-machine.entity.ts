@@ -15,13 +15,10 @@ export class VendingMachine {
   ) {}
 
   public buy(productName: ProductName, coins: string): string {
-    // Loading coins could be hidden as well into the loadingCoinsService?
     this.coinsService.loadCoins(coins);
 
     this.balanceService.topUp(this.coinsService.getLoadedCoins());
 
-    // implicit relationship. Has to happen before change can be given
-    // does this need to be enforced somehow differently?
     this.productService.prepareProductForPurchase(productName);
 
     return this.changeService.returnChange(
