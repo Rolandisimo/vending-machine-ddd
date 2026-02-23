@@ -11,7 +11,8 @@ import { ProductNotFoundError } from '../../errors/product-not-found.error';
 @Injectable()
 export class ProductService {
   private loadedProduct: ProductBase;
-  public loadProduct(productName: ProductName): void {
+
+  public prepareProductForPurchase(productName: ProductName): void {
     const foundProduct = this.findProduct(productName);
     this.loadedProduct = foundProduct;
   }

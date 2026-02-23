@@ -2,18 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { validCoins } from '../../coin/coin.model';
 import { InsufficientBalanceError } from '../../errors/insufficient-balance.error';
 import { BalanceService } from './balance.service';
-import { ProductService } from './product.service';
 
 @Injectable()
 export class ChangeService {
-  constructor(
-    private readonly balanceService: BalanceService,
-    private readonly productService: ProductService,
-  ) {}
+  constructor(private readonly balanceService: BalanceService) {}
 
-  public returnChange(): string {
-    const productPrice = this.productService.getProductPrice();
-
+  public returnChange(productPrice: number): string {
     this.balanceMustBeEqualOrHigherThanProductPrice(productPrice);
 
     return this.calculateChange(productPrice);
