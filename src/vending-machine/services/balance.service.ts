@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Coin } from '../../coin/coin.value';
 import { Balance } from '../value-objects/balance.value';
 
+// Feels a bit awkward to delegate similar actions that the Balance Value Object
+// has to the service but the service feels more natural for using elsewhere
 @Injectable()
 export class BalanceService {
   private balance: Balance = new Balance(0);
