@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { LoadingCoinsService } from './services/loading-coins.service';
-import { LoadingProductService } from './services/loading-product.service';
+import { CoinsService } from './services/coins.service';
 import { VendingMachine } from './vending-machine.entity';
 import { ChangeService } from './services/change.service';
 import { BalanceService } from './services/balance.service';
+import { ProductService } from './services/product.service';
 
 @Module({
   controllers: [],
   providers: [
     VendingMachine,
-    LoadingCoinsService,
-    LoadingProductService,
+    CoinsService,
+    ProductService,
     ChangeService,
     BalanceService,
   ],

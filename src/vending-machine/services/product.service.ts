@@ -9,14 +9,19 @@ import {
 import { ProductNotFoundError } from '../../errors/product-not-found.error';
 
 @Injectable()
-export class LoadingProductService {
+export class ProductService {
   private loadedProduct: ProductBase;
   public loadProduct(productName: ProductName): void {
     const foundProduct = this.findProduct(productName);
     this.loadedProduct = foundProduct;
   }
+
   public getLoadedProduct(): ProductBase {
     return this.loadedProduct;
+  }
+
+  public getProductPrice(): number {
+    return this.loadedProduct.getPrice();
   }
 
   // Assuming retrieval from DB

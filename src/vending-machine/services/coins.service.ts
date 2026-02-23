@@ -3,7 +3,7 @@ import { validCoins } from '../../coin/coin.model';
 import { Coin } from '../../coin/coin.value';
 
 @Injectable()
-export class LoadingCoinsService {
+export class CoinsService {
   private readonly loadedCoins: Coin[] = [];
 
   public loadCoins(coins: string): void {
