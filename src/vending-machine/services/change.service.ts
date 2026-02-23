@@ -3,45 +3,43 @@ import { ProductBase } from '../../product/products';
 import { Coin } from '../../coin/coin.value';
 import { validCoins } from '../../coin/coin.model';
 import { InsufficientBalanceError } from '../../errors/insufficient-balance.error';
-import { Balance } from '../value-objects/balance.value';
+import { BalanceService } from './balance.service';
 
 @Injectable()
 export class ChangeService {
-  private balance: Balance = new Balance(0);
-  private loadBalance(loadedCoins: Coin[]): void {
-    loadedCoins.forEach((coin) => {
-      this.balance = this.balance.add(coin.value);
-    });
-  }
+  constructor(private readonly balanceService: BalanceService) {}
 
-  public returnChange(loadedProduct: ProductBase, loadedCoins: Coin[]): string {
-    this.loadBalance(loadedCoins);
+  public returnChange(product: ProductBase, coins: Coin[]): string {
+    // why is topup here? Feels awkward
+    this.balanceService.topUp(coins);
 
     // domain rule - balance can't be lower than product price
     // might need a specification class
-    if (this.balance.getValue() < loadedProduct.getPrice()) {
+    // feels like Value Object behavior but exposing the balance directly feels wrong due to other
+    // operations that balance service can do
+    if (this.balanceService.isLessThan(product.getPrice())) {
       throw new InsufficientBalanceError(
-        this.balance.getValue(),
-        loadedProduct.getPrice(),
+        this.balanceService.getBalance(),
+        product.getPrice(),
       );
     }
 
-    return this.getChangeToGiveBackAfterPaying(loadedProduct.getPrice());
+    return this.getChangeToGiveBackAfterPaying(product.getPrice());
   }
 
-  private getChangeToGiveBackAfterPaying(loadedProductPrice: number): string {
-    this.balance = this.balance.subtract(loadedProductPrice);
+  private getChangeToGiveBackAfterPaying(productPrice: number): string {
+    this.balanceService.subtract(productPrice);
     const coinsGivenBack: number[] = [];
 
     // Algorithm innefficient because it goes over all coins every time
-    while (this.balance.getValue() > 0) {
+    while (this.balanceService.isMoreThan(0)) {
       for (const validCoin of validCoins) {
-        if (this.balance.getValue() < validCoin) {
+        if (this.balanceService.isLessThan(validCoin)) {
           continue;
         }
 
         coinsGivenBack.push(validCoin);
-        this.balance = this.balance.subtract(validCoin);
+        this.balanceService.subtract(validCoin);
         break;
       }
     }

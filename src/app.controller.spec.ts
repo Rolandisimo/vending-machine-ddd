@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { VendingMachineModule } from './vending-machine/vending-machine.module';
 import { ProductName } from './product/product.model';
 import { InsufficientBalanceError } from './errors/insufficient-balance.error';
@@ -14,7 +13,7 @@ describe('AppController Unit Tests', () => {
     const app: TestingModule = await Test.createTestingModule({
       imports: [VendingMachineModule],
       controllers: [AppController],
-      providers: [AppService],
+      providers: [],
     }).compile();
 
     appController = app.get<AppController>(AppController);
