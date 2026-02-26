@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProductName } from '../product/product.model';
 import { ChangeService } from './services/change.service';
-import { CoinsService } from './services/coins.service';
+import { CoinsService } from '../coin/coins.service';
 import { ProductService } from '../product/product.service';
 import { BalanceService } from './services/balance.service';
 

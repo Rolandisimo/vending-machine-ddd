@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CoinsService } from './services/coins.service';
+import { CoinsService } from '../coin/coins.service';
 import { VendingMachine } from './vending-machine.entity';
 import { ChangeService } from './services/change.service';
 import { BalanceService } from './services/balance.service';

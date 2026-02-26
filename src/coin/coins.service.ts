@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { validCoins } from '../../coin/coin.model';
-import { Coin } from '../../coin/coin.value';
+import { validCoins } from './coin.model';
+import { Coin } from './coin.value';
 
 @Injectable()
 export class CoinsService {
