@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProductName } from '../product/product.model';
 import { ChangeService } from './services/change.service';
 import { CoinsService } from './services/coins.service';
-import { ProductService } from './services/product.service';
+import { ProductService } from '../product/product.service';
 import { BalanceService } from './services/balance.service';
 
 @Injectable()
@@ -15,14 +15,10 @@ export class VendingMachine {
   ) {}
 
   public buy(productName: ProductName, coins: string): string {
-    this.coinsService.loadCoins(coins);
-
-    this.balanceService.topUp(this.coinsService.getLoadedCoins());
-
-    this.productService.prepareProductForPurchase(productName);
+    this.balanceService.topUp(this.coinsService.getCoins(coins));
 
     return this.changeService.returnChange(
-      this.productService.getProductPrice(),
+      this.productService.getProductPrice(productName),
     );
   }
 }

@@ -4,9 +4,8 @@ import { Coin } from '../../coin/coin.value';
 
 @Injectable()
 export class CoinsService {
-  private readonly loadedCoins: Coin[] = [];
-
-  public loadCoins(coins: string): void {
+  public getCoins(coins: string): Coin[] {
+    const loadedCoins: Coin[] = [];
     const rawCoinValuesFromInput = this.extractCoinValuesFromRawInput(coins);
 
     rawCoinValuesFromInput.forEach((coin) => {
@@ -14,12 +13,10 @@ export class CoinsService {
         return;
       }
 
-      this.loadedCoins.push(new Coin(coin));
+      loadedCoins.push(new Coin(coin));
     });
-  }
 
-  public getLoadedCoins(): Coin[] {
-    return this.loadedCoins;
+    return loadedCoins;
   }
 
   private extractCoinValuesFromRawInput(coins: string): number[] {
