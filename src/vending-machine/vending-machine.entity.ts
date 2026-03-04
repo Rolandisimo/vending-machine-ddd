@@ -26,8 +26,11 @@ export class VendingMachine {
   }
 
   private topUpBalance(coins: Coin[]): void {
+    let finalValue = 0;
     coins.forEach((coin) => {
-      this.balance = this.balance.add(coin.value);
+      finalValue += coin.value;
     });
+
+    this.balance = this.balance.add(finalValue);
   }
 }
