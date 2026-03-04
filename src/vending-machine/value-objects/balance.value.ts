@@ -20,4 +20,12 @@ export class Balance {
   public getValue(): number {
     return this.value;
   }
+
+  public isLessThan(value: number): boolean {
+    return this.getValue() < value;
+  }
+
+  public isMoreThan(value: number): boolean {
+    return this.getValue() > value;
+  }
 }

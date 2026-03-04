@@ -1,40 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { validCoins } from '../../coin/coin.model';
 import { InsufficientBalanceError } from '../../errors/insufficient-balance.error';
-import { BalanceService } from './balance.service';
+import { Balance } from '../value-objects/balance.value';
 
 @Injectable()
 export class ChangeService {
-  constructor(private readonly balanceService: BalanceService) {}
+  public returnChange(balance: Balance, productPrice: number): string {
+    this.balanceMustBeEqualOrHigherThanProductPrice(balance, productPrice);
 
-  public returnChange(productPrice: number): string {
-    this.balanceMustBeEqualOrHigherThanProductPrice(productPrice);
-
-    return this.calculateChange(productPrice);
+    return this.calculateChange(balance, productPrice);
   }
 
-  private balanceMustBeEqualOrHigherThanProductPrice(productPrice: number) {
-    if (this.balanceService.isLessThan(productPrice)) {
-      throw new InsufficientBalanceError(
-        this.balanceService.getBalance(),
-        productPrice,
-      );
+  private balanceMustBeEqualOrHigherThanProductPrice(
+    balance: Balance,
+    productPrice: number,
+  ) {
+    if (balance.isLessThan(productPrice)) {
+      throw new InsufficientBalanceError(balance.getValue(), productPrice);
     }
   }
 
-  private calculateChange(productPrice: number): string {
-    this.balanceService.subtract(productPrice);
+  private calculateChange(balance: Balance, productPrice: number): string {
+    let changingBalance = balance.subtract(productPrice);
     const coinsGivenBack: number[] = [];
 
     // Algorithm innefficient because it goes over all coins every time
-    while (this.balanceService.isMoreThan(0)) {
+    while (changingBalance.isMoreThan(0)) {
       for (const validCoin of validCoins) {
-        if (this.balanceService.isLessThan(validCoin)) {
+        if (changingBalance.isLessThan(validCoin)) {
           continue;
         }
 
         coinsGivenBack.push(validCoin);
-        this.balanceService.subtract(validCoin);
+        changingBalance = changingBalance.subtract(validCoin);
         break;
       }
     }
