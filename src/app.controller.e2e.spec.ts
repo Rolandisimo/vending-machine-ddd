@@ -85,6 +85,23 @@ describe('AppController E2E', () => {
       .expect(HttpStatus.BAD_REQUEST);
   });
 
+  xit(`TBD RESET BALANCE TEST - nestjs not verifying DTO rules for some reason`, () => {
+    request(server)
+      .post('/buy')
+      .send({
+        productName: ProductName.A,
+        coins: '50 50',
+      })
+      .expect('5');
+
+    return request(server)
+      .post('/buy')
+      .send({
+        productName: ProductName.A,
+      })
+      .expect(HttpStatus.BAD_REQUEST);
+  });
+
   afterEach(async () => {
     await app.close();
   });

@@ -19,10 +19,14 @@ export class VendingMachine {
   public buy(productName: ProductName, coins: string): string {
     this.topUpBalance(this.coinsService.getCoins(coins));
 
-    return this.changeService.returnChange(
+    const returnedChange = this.changeService.returnChange(
       this.balance,
       this.productService.getProductPrice(productName),
     );
+
+    this.resetBalance();
+
+    return returnedChange;
   }
 
   private topUpBalance(coins: Coin[]): void {
@@ -32,5 +36,9 @@ export class VendingMachine {
     });
 
     this.balance = this.balance.add(finalValue);
+  }
+
+  private resetBalance(): void {
+    this.balance = new Balance(0);
   }
 }
